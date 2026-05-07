@@ -71,4 +71,4 @@ python assistant_bot.py
 File `credentials.json`, `token.json`, dan folder `whatsapp_profile` telah dimasukkan ke dalam `.gitignore` agar data pribadi dan sesi login Anda tidak terunggah ke publik.
 
 ---
-*Dikembangkan dengan ❤️ untuk produktivitas yang lebih cerdas.*
+*Dikembangkan oleh Maverick_list untuk produktivitas yang lebih cerdas.*
