@@ -1,0 +1,19 @@
+
+# Credentials and Tokens
+credentials.json
+token.json
+token_gmail.json
+.env
+
+# WhatsApp Session Profile
+whatsapp_profile/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Diagnostic screenshots
+*.png
+
+# Logs
+*.log
