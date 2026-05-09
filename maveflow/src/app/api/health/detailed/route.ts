@@ -15,7 +15,7 @@ export async function GET() {
   try {
     // 1. Database Check
     const dbStart = performance.now();
-    await db.$queryRaw\`SELECT 1\`;
+    await db.$queryRaw`SELECT 1`;
     status.services.database = { status: "up", latencyMs: Math.round(performance.now() - dbStart) };
   } catch (e: any) {
     status.overall = "degraded";

@@ -51,14 +51,14 @@ export default function OnboardingPage() {
         <div className="absolute top-1/2 left-0 w-full h-1 bg-white/10 -translate-y-1/2 rounded-full z-0" />
         <div 
           className="absolute top-1/2 left-0 h-1 bg-indigo-500 -translate-y-1/2 rounded-full z-0 transition-all duration-500"
-          style={{ width: \`\${((step - 1) / 3) * 100}%\` }}
+          style={{ width: `${((step - 1) / 3) * 100}%` }}
         />
         {STEPS.map((s) => (
           <div key={s.id} className="relative z-10 flex flex-col items-center gap-2">
-            <div className={\`h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors \${step >= s.id ? 'bg-indigo-500 text-white' : 'bg-zinc-800 text-zinc-500 border border-white/10'}\`}>
+            <div className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${step >= s.id ? 'bg-indigo-500 text-white' : 'bg-zinc-800 text-zinc-500 border border-white/10'}`}>
               {step > s.id ? <CheckCircle2 className="h-5 w-5" /> : s.id}
             </div>
-            <span className={\`text-xs absolute -bottom-6 whitespace-nowrap \${step >= s.id ? 'text-indigo-400 font-medium' : 'text-zinc-600'}\`}>
+            <span className={`text-xs absolute -bottom-6 whitespace-nowrap ${step >= s.id ? 'text-indigo-400 font-medium' : 'text-zinc-600'}`}>
               {s.title}
             </span>
           </div>
@@ -123,9 +123,9 @@ export default function OnboardingPage() {
                   <div 
                     key={svc.id}
                     onClick={() => toggleService(svc.id)}
-                    className={\`cursor-pointer p-4 rounded-xl border transition-all flex flex-col items-center justify-center gap-3 \${selectedServices.includes(svc.id) ? 'bg-indigo-500/10 border-indigo-500 text-white' : 'bg-black/20 border-white/10 text-zinc-400 hover:border-white/20'}\`}
+                    className={`cursor-pointer p-4 rounded-xl border transition-all flex flex-col items-center justify-center gap-3 ${selectedServices.includes(svc.id) ? 'bg-indigo-500/10 border-indigo-500 text-white' : 'bg-black/20 border-white/10 text-zinc-400 hover:border-white/20'}`}
                   >
-                    <svc.icon className={\`h-8 w-8 \${selectedServices.includes(svc.id) ? svc.color : 'text-zinc-600'}\`} />
+                    <svc.icon className={`h-8 w-8 ${selectedServices.includes(svc.id) ? svc.color : 'text-zinc-600'}`} />
                     <span className="font-medium">{svc.name}</span>
                   </div>
                 ))}
@@ -159,10 +159,10 @@ export default function OnboardingPage() {
                   <div 
                     key={t.id}
                     onClick={() => setSelectedTemplate(t.id)}
-                    className={\`cursor-pointer p-4 rounded-xl border transition-all flex items-center justify-between \${selectedTemplate === t.id ? 'bg-indigo-500/10 border-indigo-500' : 'bg-black/20 border-white/10 hover:border-white/20'}\`}
+                    className={`cursor-pointer p-4 rounded-xl border transition-all flex items-center justify-between ${selectedTemplate === t.id ? 'bg-indigo-500/10 border-indigo-500' : 'bg-black/20 border-white/10 hover:border-white/20'}`}
                   >
                     <div>
-                      <p className={\`font-medium \${selectedTemplate === t.id ? 'text-white' : 'text-zinc-300'}\`}>{t.title}</p>
+                      <p className={`font-medium ${selectedTemplate === t.id ? 'text-white' : 'text-zinc-300'}`}>{t.title}</p>
                       <p className="text-xs text-zinc-500 mt-1">{t.desc}</p>
                     </div>
                     {selectedTemplate === t.id && <CheckCircle2 className="h-5 w-5 text-indigo-500" />}

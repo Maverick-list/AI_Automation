@@ -36,8 +36,8 @@ export default function TemplatesPage() {
           <Card key={t.id} className="bg-white/5 border-white/10 hover:border-indigo-500/30 transition-all group flex flex-col">
             <CardHeader>
               <div className="flex justify-between items-start mb-4">
-                <div className={\`h-10 w-10 rounded-xl \${t.bg} flex items-center justify-center\`}>
-                  <t.icon className={\`h-5 w-5 \${t.color}\`} />
+                <div className={`h-10 w-10 rounded-xl ${t.bg} flex items-center justify-center`}>
+                  <t.icon className={`h-5 w-5 ${t.color}`} />
                 </div>
                 <Badge variant="outline" className="bg-black/40 border-white/10 text-[10px] text-zinc-400">{t.category}</Badge>
               </div>
@@ -45,7 +45,7 @@ export default function TemplatesPage() {
             </CardHeader>
             <CardContent className="flex-1 flex flex-col justify-between">
               <p className="text-sm text-zinc-400 mb-6">{t.desc}</p>
-              <Link href={\`/dashboard/automations/new?template=\${t.id}\`} className="w-full">
+              <Link href={`/dashboard/automations/new?template=${t.id}`} className="w-full">
                 <Button variant="outline" className="w-full border-white/10 text-white hover:bg-indigo-600 hover:text-white hover:border-indigo-500 transition-all">
                   Use Template
                 </Button>

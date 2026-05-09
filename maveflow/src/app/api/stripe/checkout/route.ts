@@ -25,8 +25,8 @@ export async function POST(req: NextRequest) {
           quantity: 1,
         },
       ],
-      success_url: \`\${process.env.NEXTAUTH_URL}/dashboard/settings?session_id={CHECKOUT_SESSION_ID}&success=true\`,
-      cancel_url: \`\${process.env.NEXTAUTH_URL}/pricing?canceled=true\`,
+      success_url: `${process.env.NEXTAUTH_URL}/dashboard/settings?session_id={CHECKOUT_SESSION_ID}&success=true`,
+      cancel_url: `${process.env.NEXTAUTH_URL}/pricing?canceled=true`,
     });
 
     return NextResponse.json({ url: session.url });
