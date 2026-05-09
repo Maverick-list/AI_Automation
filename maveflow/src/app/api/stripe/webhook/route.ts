@@ -14,8 +14,8 @@ export async function POST(req: NextRequest) {
     if (!sig || !endpointSecret) throw new Error("Missing Stripe signature or secret.");
     event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
   } catch (err: any) {
-    console.error(\`[Stripe Webhook] Error: \${err.message}\`);
-    return new NextResponse(\`Webhook Error: \${err.message}\`, { status: 400 });
+    console.error(`[Stripe Webhook] Error: ${err.message}`);
+    return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
   }
 
   try {
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
             where: { id: userId },
             data: { plan: "PRO" }
           });
-          console.log(\`[Stripe] User \${userId} upgraded to PRO.\`);
+          console.log(`[Stripe] User ${userId} upgraded to PRO.`);
         }
         break;
       }
@@ -39,12 +39,12 @@ export async function POST(req: NextRequest) {
         const subscription = event.data.object as any;
         // Search user by stripe customer ID if saved, or just rely on manual handling
         // For standard implementation, you'd store stripeCustomerId in User model
-        console.log(\`[Stripe] Subscription deleted: \${subscription.id}\`);
+        console.log(`[Stripe] Subscription deleted: ${subscription.id}`);
         break;
       }
 
       default:
-        console.log(\`[Stripe] Unhandled event type \${event.type}\`);
+        console.log(`[Stripe] Unhandled event type ${event.type}`);
     }
   } catch (error) {
     console.error("[Stripe Webhook Handler] Error:", error);
