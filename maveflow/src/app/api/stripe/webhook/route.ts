@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { db } from "@/lib/db";
 
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+export const dynamic = "force-dynamic";
+
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
