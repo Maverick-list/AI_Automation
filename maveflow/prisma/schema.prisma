@@ -1,0 +1,173 @@
+// ============================================
+// MaveFlow - Prisma Database Schema
+// ============================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ───────────────────────────────────────────────────────
+
+enum PlanType {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum AutomationRunStatus {
+  PENDING
+  RUNNING
+  SUCCESS
+  FAILED
+}
+
+// ── Models ──────────────────────────────────────────────────────
+
+model User {
+  id                    String            @id @default(cuid())
+  email                 String            @unique
+  name                  String?
+  image                 String?
+  googleId              String?           @unique
+  
+  // Encrypted tokens for OpenClaw to use on behalf of user
+  encryptedAccessToken  String?
+  encryptedRefreshToken String?
+  tokenExpiry           DateTime?
+  
+  plan                  PlanType          @default(FREE)
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  // Relations
+  workspaces            Workspace[]       @relation("WorkspaceOwner")
+  workspaceMembers      WorkspaceMember[]
+  googleTokens          GoogleToken[]
+  openClawSessions      OpenClawSession[]
+  notifications         Notification[]
+}
+
+model Workspace {
+  id          String            @id @default(cuid())
+  name        String
+  ownerId     String
+  settings    Json              @default("{}")
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  // Relations
+  owner       User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members     WorkspaceMember[]
+  automations Automation[]
+
+  @@index([ownerId])
+}
+
+model WorkspaceMember {
+  id          String    @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        String    @default("MEMBER") // OWNER, ADMIN, MEMBER
+  joinedAt    DateTime  @default(now())
+
+  // Relations
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@index([workspaceId])
+  @@index([userId])
+}
+
+model Automation {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  workspaceId String
+  
+  // JSON configurations
+  trigger     Json      // { type: "gmail_new_email", config: { ... } }
+  actions     Json      // [ { type: "sheets_append", config: { ... } } ]
+  
+  isActive    Boolean   @default(true)
+  runCount    Int       @default(0)
+  lastRunAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  workspace   Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  runs        AutomationRun[]
+
+  @@index([workspaceId])
+  @@index([isActive])
+}
+
+model AutomationRun {
+  id           String              @id @default(cuid())
+  automationId String
+  status       AutomationRunStatus @default(PENDING)
+  startedAt    DateTime            @default(now())
+  finishedAt   DateTime?
+  logs         Json                @default("[]")
+  errorMessage String?
+
+  // Relations
+  automation   Automation          @relation(fields: [automationId], references: [id], onDelete: Cascade)
+
+  @@index([automationId])
+  @@index([status])
+  @@index([startedAt])
+}
+
+// Separate model for more granular/specific tokens if needed
+// (User model already has a default one, this is for multiple scopes/accounts if required)
+model GoogleToken {
+  id                    String    @id @default(cuid())
+  userId                String
+  scope                 String
+  encryptedAccessToken  String
+  encryptedRefreshToken String?
+  expiresAt             DateTime
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  // Relations
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model OpenClawSession {
+  id          String    @id @default(cuid())
+  userId      String
+  sessionId   String    @unique
+  metadata    Json      @default("{}")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sessionId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // run_success, run_failed, token_expired, quota_warning
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  link      String?  // Optional URL to redirect when clicked
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+}

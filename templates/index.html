@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw Control Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --bg: #0b0e14;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text: #ffffff;
+            --accent: #ff007a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.05) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(255, 0, 122, 0.05) 0%, transparent 40%);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            padding: 40px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ff4b2b; /* Inactive */
+        }
+
+        .status-dot.active {
+            background: #00e676;
+            box-shadow: 0 0 15px #00e676;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .card h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            opacity: 0.8;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-start {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            color: white;
+        }
+
+        .btn-stop {
+            background: linear-gradient(to right, #cb2d3e, #ef473a);
+            color: white;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            outline: none;
+        }
+
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        .console {
+            margin-top: 40px;
+            background: black;
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            color: #00e676;
+            height: 150px;
+            overflow-y: auto;
+            border: 1px solid rgba(0, 230, 118, 0.2);
+        }
+
+        .db-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>OpenClaw Dashboard</h1>
+            </div>
+            <div class="status-badge">
+                <div id="status-dot" class="status-dot"></div>
+                Status: <span id="status-text">Checking...</span>
+            </div>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <h3>Mave AI Control</h3>
+                <p style="margin-bottom: 20px; font-size: 14px; opacity: 0.7;">Aktifkan Chatbot Penjualan Otomatis yang terhubung ke Google Sheets.</p>
+                <button id="start-btn" class="btn btn-start">Start Mave AI</button>
+                <button id="stop-btn" class="btn btn-stop">Stop All Systems</button>
+            </div>
+
+            <div class="card">
+                <h3>Sounding Promosi</h3>
+                <div class="input-group">
+                    <label>Pesan Promosi</label>
+                    <textarea placeholder="Ketik pesan promosi Bos..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Daftar Grup (Pisah dengan koma)</label>
+                    <input type="text" placeholder="Kampus A, Kampus B, ...">
+                </div>
+                <button class="btn btn-start" style="background: var(--secondary);">Kirim Sounding</button>
+            </div>
+        </div>
+
+        <a href="#" class="db-link" onclick="window.open('https://docs.google.com/spreadsheets/d/1jP6wGF9zZ3jk4Td2m4fO8-0THbmq-adIkBYeQCPDM_o/edit', '_blank')">🔗 Buka Database Google Sheets</a>
+
+        <div class="console" id="console">
+            [OpenClaw Dashboard Ready]
+            <br>> Menunggu perintah...
+        </div>
+    </div>
+
+    <script>
+        const statusText = document.getElementById('status-text');
+        const statusDot = document.getElementById('status-dot');
+        const consoleLog = document.getElementById('console');
+
+        function updateStatus() {
+            fetch('/api/status')
+                .then(res => res.json())
+                .then(data => {
+                    statusText.innerText = data.status;
+                    if (data.status === 'Active') {
+                        statusDot.classList.add('active');
+                    } else {
+                        statusDot.classList.remove('active');
+                    }
+                });
+        }
+
+        document.getElementById('start-btn').onclick = () => {
+            log("🚀 Memulai Mave AI...");
+            fetch('/api/start', {method: 'POST'})
+                .then(res => res.json())
+                .then(data => log("> " + data.message));
+        };
+
+        document.getElementById('stop-btn').onclick = () => {
+            log("🛑 Menghentikan sistem...");
+            fetch('/api/stop', {method: 'POST'})
+                .then(res => res.json())
+                .then(data => log("> " + data.message));
+        };
+
+        function log(msg) {
+            consoleLog.innerHTML += `<br>> ${msg}`;
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        }
+
+        setInterval(updateStatus, 3000);
+        updateStatus();
+    </script>
+</body>
+</html>

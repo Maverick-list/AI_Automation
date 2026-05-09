@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw Enterprise V2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --bg: #080a0f;
+            --sidebar: #11141d;
+            --card: #1a1e29;
+            --text: #ffffff;
+            --accent: #ff007a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
+        body { background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo { font-size: 24px; font-weight: 700; margin-bottom: 50px; background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .nav-item {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            opacity: 0.6;
+        }
+
+        .nav-item:hover, .nav-item.active { background: rgba(255, 255, 255, 0.05); opacity: 1; color: var(--primary); }
+
+        /* Main Content */
+        .main { flex: 1; padding: 40px; overflow-y: auto; background-image: radial-gradient(circle at top right, rgba(0, 242, 254, 0.03), transparent); }
+
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+
+        .card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.05); position: relative; overflow: hidden; }
+
+        .card h3 { margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; gap: 10px; }
+
+        .api-badge { position: absolute; top: 15px; right: 15px; font-size: 10px; padding: 4px 10px; border-radius: 50px; background: rgba(0, 230, 118, 0.1); color: #00e676; }
+
+        .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; margin-top: 15px; transition: 0.3s; }
+        .btn-p { background: var(--primary); color: #000; }
+        .btn-s { background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); }
+
+        .status-card { display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 15px; margin-bottom: 10px; font-size: 14px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #00e676; }
+
+        /* View Switching */
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.5s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">OpenClaw 2.0</div>
+        <div class="nav-item active" onclick="showView('home')">🏠 Dashboard</div>
+        <div class="nav-item" onclick="showView('office')">📧 Office Suite</div>
+        <div class="nav-item" onclick="showView('data')">📊 Data Center</div>
+        <div class="nav-item" onclick="showView('wa')">📱 WhatsApp Core</div>
+        <div class="nav-item" onclick="showView('ai')">🧠 AI Brain</div>
+    </div>
+
+    <div class="main">
+        <!-- HOME VIEW -->
+        <div id="home" class="view active">
+            <div class="header">
+                <h2>Integrity System</h2>
+                <button class="btn-s" style="width: auto; padding: 10px 20px;" onclick="refreshHealth()">🔄 Refresh Status</button>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <h3>7-API Integrations</h3>
+                    <div id="health-list">
+                        <div class="status-card"><div class="dot"></div> Gmail API: <span style="margin-left:auto">Checking...</span></div>
+                        <div class="status-card"><div class="dot"></div> Calendar API: <span style="margin-left:auto">Checking...</span></div>
+                        <div class="status-card"><div class="dot"></div> Tasks API: <span style="margin-left:auto">Checking...</span></div>
+                        <div class="status-card"><div class="dot"></div> Sheets API: <span style="margin-left:auto">Checking...</span></div>
+                        <div class="status-card"><div class="dot"></div> Drive API: <span style="margin-left:auto">Checking...</span></div>
+                        <div class="status-card"><div class="dot"></div> Gemini API: <span style="margin-left:auto">Checking...</span></div>
+                        <div class="status-card"><div class="dot"></div> WhatsApp Engine: <span style="margin-left:auto">Checking...</span></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Quick Actions</h3>
+                    <button class="btn btn-p" onclick="startBot()">🚀 Launch Mave AI</button>
+                    <button class="btn btn-s" onclick="stopBot()">🛑 Terminate All</button>
+                    <button class="btn btn-s" onclick="window.open('https://docs.google.com/spreadsheets/d/1jP6wGF9zZ3jk4Td2m4fO8-0THbmq-adIkBYeQCPDM_o/edit', '_blank')">📂 Open DB Sheet</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- WA VIEW -->
+        <div id="wa" class="view">
+            <div class="header"><h2>WhatsApp & Marketing</h2></div>
+            <div class="grid">
+                <div class="card">
+                    <h3>Sounding Engine</h3>
+                    <textarea placeholder="Pesan Sounding..." style="width:100%; height:100px; background:#000; color:#fff; border:none; padding:10px; border-radius:10px;"></textarea>
+                    <input type="text" placeholder="Grup (Grup A, Grup B)" style="width:100%; background:#000; color:#fff; border:none; padding:10px; margin-top:10px; border-radius:10px;">
+                    <button class="btn btn-p">Broadcast Now</button>
+                </div>
+                <div class="card">
+                    <h3>Chatbot Console</h3>
+                    <div id="wa-console" style="height:200px; background:#000; color:#00e676; font-family:monospace; font-size:12px; padding:10px; overflow-y:auto; border-radius:10px;">
+                        [System] Waiting for activity...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OTHER VIEWS PLACEHOLDERS -->
+        <div id="office" class="view"><div class="header"><h2>Office Suite (Mail/Calendar)</h2></div><p>Integrasi Gmail & Calendar sedang dimuat...</p></div>
+        <div id="data" class="view"><div class="header"><h2>Data Center (Sheets/Drive)</h2></div><p>Integrasi Google Sheets sedang dimuat...</p></div>
+        <div id="ai" class="view"><div class="header"><h2>AI Brain (Gemini)</h2></div><p>Integrasi Gemini AI sedang dimuat...</p></div>
+
+    </div>
+
+    <script>
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function refreshHealth() {
+            fetch('/api/health').then(r => r.json()).then(data => {
+                const list = document.getElementById('health-list');
+                list.innerHTML = "";
+                for (const [key, status] of Object.entries(data)) {
+                    const color = status === 'Connected' ? '#00e676' : '#ff4b2b';
+                    list.innerHTML += `<div class="status-card"><div class="dot" style="background:${color}"></div> ${key.toUpperCase()} API: <span style="margin-left:auto; color:${color}">${status}</span></div>`;
+                }
+            });
+        }
+
+        function startBot() { fetch('/api/bot/start', {method: 'POST'}); }
+        function stopBot() { fetch('/api/bot/stop', {method: 'POST'}); }
+
+        setInterval(refreshHealth, 10000);
+        refreshHealth();
+    </script>
+</body>
+</html>
